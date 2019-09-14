@@ -1,0 +1,10 @@
+apply from: '../gradle/common.gradle'
+
+dependencies {
+    compile group: "io.vertx", name: "vertx-service-discovery", version: "${vertxVersion}"
+    compile group: "io.vertx", name: "vertx-hazelcast", version: "${vertxVersion}"
+    compile group: "io.vertx", name: "vertx-web", version: "${vertxVersion}"
+    compile group: "io.vertx", name: "vertx-web-client", version: "${vertxVersion}"
+    compile group: "io.vertx", name: "vertx-circuit-breaker", version: "${vertxVersion}"
+    compile group: "io.vertx", name: "vertx-health-check", version: "${vertxVersion}"
+}

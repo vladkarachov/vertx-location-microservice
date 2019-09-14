@@ -1,0 +1,8 @@
+rootProject.name = 'vertx-starter-pack'
+
+include 'common'
+include 'profiles'
+
+project(':common').projectDir = file('common')
+project(':profiles').projectDir = file('profiles')
+
