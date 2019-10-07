@@ -35,22 +35,30 @@ public class MicroserviceVerticle extends AbstractVerticle {
 
   // Overrides
 
-  @Override
-  public void stop(Promise<Void> stopFuture) {
-    List<Promise> promises = mRegisteredRecords
-      .stream()
-      .map(this::unpublish)
-      .collect(Collectors.toList());
-
-    if (promises.isEmpty()) {
-      stopDiscovery(stopFuture);
-    } else {
-      stopServices(promises, stopFuture);
-    }
+  /**
+   * Initialize our ServiceDiscovery object - an instrument
+   * to publish and discover various resources
+   */
+  protected void createServiceDiscovery() {
+    JsonObject config = config();
+    ServiceDiscoveryOptions opts = new ServiceDiscoveryOptions()
+            .setBackendConfiguration(config);
+    mDiscovery = ServiceDiscovery.create(vertx, opts);
   }
 
-  // Public
+  /**
+   * Publish record - way of describing a service
+   */
+  private void publish(Record record, Handler<AsyncResult<Void>> completion) {
+    mDiscovery.publish(record, ar -> {
+      if (ar.succeeded()) mRegisteredRecords.add(record);
 
+      completion.handle(ar.map((Void)null));
+    });
+  }
+
+
+  // Public
   /**
    * Http service
    *
@@ -136,8 +144,8 @@ public class MicroserviceVerticle extends AbstractVerticle {
     return mDiscovery;
   }
 
-  // Private
 
+  // Private
   protected void createHealthCheck() {
     HealthChecks hc = HealthChecks.create(vertx);
     hc.register("Microservice", 5000, future -> future.complete(Status.OK()));
@@ -156,28 +164,6 @@ public class MicroserviceVerticle extends AbstractVerticle {
       });
   }
 
-  /**
-   * Initialize our ServiceDiscovery object - an instrument
-   * to publish and discover various resources
-   */
-  protected void createServiceDiscovery() {
-    JsonObject config = config();
-    ServiceDiscoveryOptions opts = new ServiceDiscoveryOptions()
-      .setBackendConfiguration(config);
-    mDiscovery = ServiceDiscovery.create(vertx, opts);
-  }
-
-  /**
-   * Publish record - way of describing a service
-   */
-  private void publish(Record record, Handler<AsyncResult<Void>> completion) {
-    mDiscovery.publish(record, ar -> {
-      if (ar.succeeded()) mRegisteredRecords.add(record);
-
-      completion.handle(ar.map((Void)null));
-    });
-  }
-
   private Promise<Void> unpublish(Record record) {
     mRegisteredRecords.remove(record);
 
@@ -185,6 +171,20 @@ public class MicroserviceVerticle extends AbstractVerticle {
     mDiscovery.unpublish(record.getRegistration(), unregisteringFuture);
 
     return unregisteringFuture;
+  }
+
+  @Override
+  public void stop(Promise<Void> stopFuture) {
+    List<Promise> promises = mRegisteredRecords
+            .stream()
+            .map(this::unpublish)
+            .collect(Collectors.toList());
+
+    if (promises.isEmpty()) {
+      stopDiscovery(stopFuture);
+    } else {
+      stopServices(promises, stopFuture);
+    }
   }
 
   private void stopDiscovery(Promise<Void> stopPromise) {
