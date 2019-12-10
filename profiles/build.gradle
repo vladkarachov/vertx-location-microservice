@@ -22,6 +22,14 @@ dependencies {
     implementation group: 'io.grpc', name: 'grpc-services', version: '1.23.0'
     implementation group: 'com.google.protobuf', name: 'protobuf-java', version: '3.9.1'
     implementation group: 'javax.annotation', name: 'javax.annotation-api', version: '1.3.2'
+
+    implementation 'com.google.maps:google-maps-services:0.10.1'
+    implementation 'org.slf4j:slf4j-simple:1.7.25'
+
+
+    //compile 'org.mongodb:mongodb-driver-sync:3.11.2'
+    compile 'io.vertx:vertx-mongo-client:3.8.4'
+
 }
 
 sourceSets {

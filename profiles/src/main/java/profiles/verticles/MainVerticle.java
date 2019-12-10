@@ -12,6 +12,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+
+
 /** Verticle that deploys all other verticles */
 public class MainVerticle extends MicroserviceVerticle {
 
@@ -25,9 +27,12 @@ public class MainVerticle extends MicroserviceVerticle {
   public void start(Promise<Void> startPromise) {
     createServiceDiscovery();
 
+
+
     List<Promise> verticlePromises = Stream.of(
         ConfigurationVerticle.class,
-        ProfilesVerticle.class,
+        LocationVerticle.class,
+        GoogleAPI.class,
         ApiVerticle.class,
         ServiceDiscoveryVerticle.class)
       .map(el -> redeployVerticle(el.getName(), new JsonObject()))

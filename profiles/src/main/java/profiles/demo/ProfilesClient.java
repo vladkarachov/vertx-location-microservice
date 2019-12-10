@@ -1,5 +1,6 @@
 package profiles.demo;
 
+
 import io.grpc.ManagedChannel;
 import io.grpc.StatusRuntimeException;
 import io.grpc.netty.GrpcSslContexts;
@@ -15,10 +16,21 @@ import profile.ProfileRequest;
 import profile.ProfileServiceGrpc;
 import profiles.model.Config;
 
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.net.ssl.SSLException;
 import java.io.File;
+
+
+//а тут мое
+import Location.LocationObject;
+import Location.idObj;
+import Location.LocationServiceGrpc;
+import io.grpc.ManagedChannel;
+import io.grpc.ManagedChannelBuilder;
+import profiles.model.LocationData;
+import Location.resp;
 
 /** Client that connects to our server and prints response */
 public class ProfilesClient {
@@ -43,11 +55,13 @@ public class ProfilesClient {
        * Connect to server via gRPC, stub is just a synonym of client
        * (read https://grpc.io/docs/guides/ for more info)
        */
-      ProfileServiceGrpc.ProfileServiceBlockingStub stub = getService(config);
+      System.out.println(config.getEndpointPort());
+     //ProfileServiceGrpc.ProfileServiceBlockingStub stub = getService(config);
 
+      LocationServiceGrpc.LocationServiceBlockingStub stub=getLocService(config);
       try {
         /** prepare request */
-        ProfileRequest request = ProfileRequest
+       /* ProfileRequest request = ProfileRequest
           .newBuilder()
           .setId("some id")
           .build();
@@ -58,12 +72,26 @@ public class ProfilesClient {
          *    ProfilesVerticle(giving response with "Ivanov" ...)
          *
          * API verticle settled service ProfileServiceImpl on start.
-         */
+         *
         ProfileObject profile = stub
           .getProfile(request)
           .getProfile();
+        */
+      /*      idObj request = idObj
+                .newBuilder()
+                .setId("someid")
+                .build();
+       LocationObject responce = stub.getLocation(request);
+       */
 
-        System.out.println("RESPONSE IS: " + profile.toString());
+    LocationObject locationObject = LocationObject.newBuilder()
+                .setId("someid2")
+                .setLatitude(50.439415)
+                .setLongitude(30.524051)
+                .build();
+ LocationServiceGrpc.LocationServiceBlockingStub putstub=getLocService(config);
+        resp responce = putstub.addLocation(locationObject);
+        System.out.println("RESPONSE IS: " + responce.toString());
       } catch (StatusRuntimeException e) {
         System.out.println("ERROR: " + e.getStatus().toString() + ", " + e.getMessage());
       }
@@ -98,7 +126,7 @@ public class ProfilesClient {
     }
   }
 
-  private static ProfileServiceGrpc.ProfileServiceBlockingStub getService(@Nonnull Config config) {
+  private static LocationServiceGrpc.LocationServiceBlockingStub getLocService(@Nonnull Config config) {
     String endpointHost = config.getEndpointHost();
     int endpointPort = Integer.parseInt(config.getEndpointPort());
     SslContext sslContext = getSslContext(config);
@@ -107,6 +135,18 @@ public class ProfilesClient {
       .forAddress(endpointHost, endpointPort)
       .sslContext(sslContext)
       .build();
+
+    return LocationServiceGrpc.newBlockingStub(channel);
+  }
+  private static ProfileServiceGrpc.ProfileServiceBlockingStub getService(@Nonnull Config config) {
+    String endpointHost = config.getEndpointHost();
+    int endpointPort = Integer.parseInt(config.getEndpointPort());
+    SslContext sslContext = getSslContext(config);
+
+    ManagedChannel channel = NettyChannelBuilder
+            .forAddress(endpointHost, endpointPort)
+            .sslContext(sslContext)
+            .build();
 
     return ProfileServiceGrpc.newBlockingStub(channel);
   }

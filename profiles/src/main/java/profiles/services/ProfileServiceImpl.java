@@ -17,6 +17,18 @@ import javax.annotation.Nonnull;
 
 import static profiles.verticles.ProfilesVerticle.EBA_PROFILE_FETCH;
 
+
+
+
+
+
+///////////////////////////////////////////////////////////////////////deactivated  - do nothing
+
+
+
+
+
+
 /** Service for getting profile from vert.x */
 public class ProfileServiceImpl extends ProfileServiceGrpc.ProfileServiceImplBase {
 
