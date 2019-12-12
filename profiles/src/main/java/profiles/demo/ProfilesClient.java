@@ -11,8 +11,6 @@ import io.vertx.config.ConfigRetrieverOptions;
 import io.vertx.config.ConfigStoreOptions;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
-import profile.ProfileObject;
-import profile.ProfileRequest;
 import profile.ProfileServiceGrpc;
 import profiles.model.Config;
 
@@ -61,10 +59,6 @@ public class ProfilesClient {
       LocationServiceGrpc.LocationServiceBlockingStub stub=getLocService(config);
       try {
         /** prepare request */
-       /* ProfileRequest request = ProfileRequest
-          .newBuilder()
-          .setId("some id")
-          .build();
 
         /**
          * send it and get the answer, the path is:
@@ -73,24 +67,34 @@ public class ProfilesClient {
          *
          * API verticle settled service ProfileServiceImpl on start.
          *
-        ProfileObject profile = stub
-          .getProfile(request)
-          .getProfile();
+
         */
-      /*      idObj request = idObj
+      /** Get a location */
+
+
+            idObj request = idObj
                 .newBuilder()
-                .setId("someid")
+                .setId("someid2")
                 .build();
        LocationObject responce = stub.getLocation(request);
-       */
 
-    LocationObject locationObject = LocationObject.newBuilder()
-                .setId("someid2")
-                .setLatitude(50.439415)
-                .setLongitude(30.524051)
-                .build();
- LocationServiceGrpc.LocationServiceBlockingStub putstub=getLocService(config);
-        resp responce = putstub.addLocation(locationObject);
+    /** put a location */
+     /*     LocationObject locationObject = LocationObject.newBuilder()
+                        .setId("someid3")
+                        .setLatitude(50.439415)
+                        .setLongitude(30.524051)
+                        .build();
+         LocationServiceGrpc.LocationServiceBlockingStub putstub=getLocService(config);
+        resp responce = putstub.addLocation(locationObject);*/
+
+        /** delete a location */
+
+    /*       idObj request = idObj
+                  .newBuilder()
+                  .setId("someid2")
+                  .build();
+          LocationServiceGrpc.LocationServiceBlockingStub delstub = getLocService(config);
+          resp responce = delstub.deleteLocation(request);*/
         System.out.println("RESPONSE IS: " + responce.toString());
       } catch (StatusRuntimeException e) {
         System.out.println("ERROR: " + e.getStatus().toString() + ", " + e.getMessage());

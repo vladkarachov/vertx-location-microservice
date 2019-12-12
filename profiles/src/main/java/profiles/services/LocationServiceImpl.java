@@ -4,29 +4,22 @@ import Location.LocationObject;
 import Location.LocationServiceGrpc;
 import Location.idObj;
 import Location.resp;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
 import com.google.rpc.Code;
 import com.google.rpc.Status;
+import com.mongodb.DBObject;
 import io.grpc.StatusException;
 import io.grpc.protobuf.StatusProto;
 import io.grpc.stub.StreamObserver;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
-import io.vertx.core.json.JsonObject;
 import profiles.model.LocationData;
-import profiles.verticles.GoogleAPI;
-import profiles.verticles.LocationVerticle;
-import profiles.verticles.ProfilesVerticle;
 
 import javax.annotation.Nonnull;
-
-import java.rmi.registry.LocateRegistry;
 
 import static profiles.verticles.LocationVerticle.GET_LOCATION;
 import static profiles.verticles.GoogleAPI.GET_METADATA;
 import static profiles.verticles.LocationVerticle.PUT_LOCATION;
+import static profiles.verticles.LocationVerticle.DELETE_LOCATION;
 
 public class LocationServiceImpl extends LocationServiceGrpc.LocationServiceImplBase {
 
@@ -84,12 +77,30 @@ public class LocationServiceImpl extends LocationServiceGrpc.LocationServiceImpl
                     responseObserver.onError(failure);
                     return;
                 }
-                resp responce = resp.newBuilder().setCode(200).build();
-                responseObserver.onNext(responce);
+                resp response = resp.newBuilder().setCode(200).build();
+                responseObserver.onNext(response);
                 responseObserver.onCompleted();
             });
 
        });
+    }
+
+    @Override
+    public void deleteLocation(idObj request, StreamObserver<resp> responseObserver) {
+        Buffer buf = Buffer.buffer();
+        buf.appendString(request.getId());
+
+        mVertx.eventBus().request(DELETE_LOCATION, buf, ar->{
+            if(ar.failed()){
+                StatusException failure = failed(ar.cause());
+                responseObserver.onError(failure);
+                return;
+            }
+            resp response = resp.newBuilder().setCode(200).build();
+            responseObserver.onNext(response);
+            responseObserver.onCompleted();
+
+        });
     }
 
     private LocationObject transformToLocationData(LocationData loc) {

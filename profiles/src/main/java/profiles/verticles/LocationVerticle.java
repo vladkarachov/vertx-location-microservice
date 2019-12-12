@@ -99,40 +99,46 @@ public class LocationVerticle extends MicroserviceVerticle {
                     .put("country", locationData.getCountry());
 
                    */
+            System.out.println("a");
             mongoClient.find("Locations", document, sRes -> {
+
                 if (sRes.succeeded()) {
                     try{
+
+                        System.out.println("find");
                         JsonObject jsonObject = sRes.result().get(0);
                         handler.fail(400, "Already exsist");
                     }
-                    catch (Exception ignored){}
+                    catch (Exception ignored){
                         //everything ok
+                        document.put("latitude", locationData.getLatitude())
+                                .put("longitude", locationData.getLongitude())
+                                .put("city", locationData.getCity())
+                                .put("country", locationData.getCountry());
+                        mongoClient.save("Locations", document, res -> {
+                            if (res.succeeded()) {
+                                handler.reply(new JsonObject().put("code", 200));
+                            }
+                            else {
+                                handler.fail(500, res.cause().toString());
+                            }
+                        });
+                    }
                 }
                 else {
                     handler.fail(500, sRes.cause().toString());
+                }
+            });
 
-                }
-            });
-            document.put("latitude", locationData.getLatitude())
-                    .put("longitude", locationData.getLongitude())
-                    .put("city", locationData.getCity())
-                    .put("country", locationData.getCountry());
-            mongoClient.save("Locations", document, res -> {
-                if (res.succeeded()) {
-                    handler.reply(new JsonObject().put("code", 200));
-                }
-                else {
-                    handler.fail(500, res.cause().toString());
-                }
-            });
 
 
         });
         vertx.eventBus().<Buffer>consumer(DELETE_LOCATION, handler -> {
             String id = handler.body().toString();
 
-            JsonObject query = new JsonObject().put("id", id);
-            mongoClient.findOneAndDelete("Location", query, result -> {
+            //JsonObject query = new JsonObject().put("id", id);
+            JsonObject query = new JsonObject().put("id", "someid");
+            mongoClient.removeDocument("Locations", query, result -> {
                 if (result.succeeded()) {
                     handler.reply(200);
                 } else {

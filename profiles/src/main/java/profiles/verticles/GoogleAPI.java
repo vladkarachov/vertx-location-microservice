@@ -37,12 +37,12 @@ public class GoogleAPI extends MicroserviceVerticle {
 
     private void setupListener() {
         vertx.eventBus().<Buffer>consumer(GET_METADATA, handler -> {
+            /** https://github.com/googlemaps/google-maps-services-java  */
 
-            //https://github.com/googlemaps/google-maps-services-java
             GeoApiContext context = new GeoApiContext.Builder().apiKey(API_KEY).build();
             LocationData locationData= (LocationData) handler.body();
              LatLng loc= new LatLng(locationData.getLatitude(), locationData.getLongitude());
-           GeocodingApiRequest req = GeocodingApi.reverseGeocode(context, loc);//.resultType(AddressType.COUNTRY, AddressType.ADMINISTRATIVE_AREA_LEVEL_2);
+           GeocodingApiRequest req = GeocodingApi.reverseGeocode(context, loc);
            //ADMINISTRATIVE_AREA_LEVEL_2 receives districts - not every location has city, especially in different countries (but sometimes it represents a city)
             req.setCallback(new  PendingResult.Callback<GeocodingResult[]>(){
                 @Override

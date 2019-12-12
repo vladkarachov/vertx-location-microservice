@@ -2,7 +2,6 @@ package profiles.verticles;
 
 import profiles.model.*;
 import profiles.services.LocationServiceImpl;
-import profiles.services.ProfileServiceImpl;
 import vertx.common.MicroserviceVerticle;
 import io.grpc.protobuf.services.ProtoReflectionService;
 import io.vertx.core.Promise;
