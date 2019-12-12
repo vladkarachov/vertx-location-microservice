@@ -107,7 +107,7 @@ public class LocationVerticle extends MicroserviceVerticle {
 
                         System.out.println("find");
                         JsonObject jsonObject = sRes.result().get(0);
-                        handler.fail(400, "Already exsist");
+                        handler.fail(400, "Already exist");
                     }
                     catch (Exception ignored){
                         //everything ok
@@ -135,9 +135,7 @@ public class LocationVerticle extends MicroserviceVerticle {
         });
         vertx.eventBus().<Buffer>consumer(DELETE_LOCATION, handler -> {
             String id = handler.body().toString();
-
-            //JsonObject query = new JsonObject().put("id", id);
-            JsonObject query = new JsonObject().put("id", "someid");
+            JsonObject query = new JsonObject().put("id", id);
             mongoClient.removeDocument("Locations", query, result -> {
                 if (result.succeeded()) {
                     handler.reply(200);

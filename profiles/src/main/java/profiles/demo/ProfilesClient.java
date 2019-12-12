@@ -72,11 +72,11 @@ public class ProfilesClient {
       /** Get a location */
 
 
-            idObj request = idObj
+     /*        idObj request = idObj
                 .newBuilder()
                 .setId("someid2")
                 .build();
-       LocationObject responce = stub.getLocation(request);
+       LocationObject responce = stub.getLocation(request);*/
 
     /** put a location */
      /*     LocationObject locationObject = LocationObject.newBuilder()
@@ -89,12 +89,12 @@ public class ProfilesClient {
 
         /** delete a location */
 
-    /*       idObj request = idObj
+          idObj request = idObj
                   .newBuilder()
                   .setId("someid2")
                   .build();
           LocationServiceGrpc.LocationServiceBlockingStub delstub = getLocService(config);
-          resp responce = delstub.deleteLocation(request);*/
+          resp responce = delstub.deleteLocation(request);
         System.out.println("RESPONSE IS: " + responce.toString());
       } catch (StatusRuntimeException e) {
         System.out.println("ERROR: " + e.getStatus().toString() + ", " + e.getMessage());
