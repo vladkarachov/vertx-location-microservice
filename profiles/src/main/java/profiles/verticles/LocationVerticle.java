@@ -117,7 +117,7 @@ public class LocationVerticle extends MicroserviceVerticle {
                                 .put("country", locationData.getCountry());
                         mongoClient.save("Locations", document, res -> {
                             if (res.succeeded()) {
-                                handler.reply(new JsonObject().put("code", 200));
+                                handler.reply(200);
                             }
                             else {
                                 handler.fail(500, res.cause().toString());

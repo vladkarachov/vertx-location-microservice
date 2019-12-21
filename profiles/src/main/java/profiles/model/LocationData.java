@@ -26,13 +26,13 @@ public class LocationData {
 
 
     public LocationData(@Nonnull JsonObject json) {
-        mJson = json;
+
         mId = json.getString(ID);
         mLatitude = json.getDouble(LATITUDE);
         mLongitude = json.getDouble(LONGITUDE);
         mCity=json.getString(CITY);
         mCountry=json.getString(COUNTRY);
-
+        mJson = this.toJson();
     }
 
     public LocationData(@Nonnull String id, @Nonnull double latitude, @Nullable double longitude, String city, String country) {
@@ -66,7 +66,12 @@ public class LocationData {
     }
 
     public JsonObject toJson() {
-        return mJson;
+        return new JsonObject()
+                .put(ID, mId)
+                .put(LATITUDE, mLatitude)
+                .put(LONGITUDE, mLongitude)
+                .put(CITY, mCity)
+                .put(COUNTRY, mCountry);
     }
 
     public Double getLatitude() {
@@ -95,13 +100,16 @@ public class LocationData {
 
     @Override
     public String toString() {
-        return "Location{" +
-                "id='" + mId + '\'' +
-                ", latitude='" + mLatitude + '\'' +
-                ", longitude='" + mLongitude+ '\'' +
-                ", country=" + mCountry +
-                ", city=" + mCity +
-                '}';
+
+        return mJson.toString();
+        //это в другую сторону не разбирается)))
+//        return "{" +
+//                "id:'" + mId + '\'' +
+//                ", latitude:'" + mLatitude + '\'' +
+//                ", longitude:'" + mLongitude+ '\'' +
+//                ", country:" + mCountry +
+//                ", city:" + mCity +
+//                '}';
     }
 
     public static class Builder {

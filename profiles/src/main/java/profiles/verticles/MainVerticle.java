@@ -34,6 +34,8 @@ public class MainVerticle extends MicroserviceVerticle {
         LocationVerticle.class,
         GoogleAPI.class,
         ApiVerticle.class,
+        kafkaConsumerVerticle.class,
+            kafkaProducerVerticle.class,
         ServiceDiscoveryVerticle.class)
       .map(el -> redeployVerticle(el.getName(), new JsonObject()))
       .collect(Collectors.toList());

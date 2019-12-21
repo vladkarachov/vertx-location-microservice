@@ -6,7 +6,7 @@ import io.vertx.core.json.JsonObject;
 
 
 public class LocationDataCodec implements MessageCodec<LocationData, LocationData> {
-//потом допишу..
+
     @Override
     public void encodeToWire(Buffer buffer, LocationData locs) {
         String str = locs.toJson()

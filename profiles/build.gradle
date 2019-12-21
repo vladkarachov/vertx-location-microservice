@@ -27,8 +27,8 @@ dependencies {
     implementation 'org.slf4j:slf4j-simple:1.7.25'
 
 
-    //compile 'org.mongodb:mongodb-driver-sync:3.11.2'
     compile 'io.vertx:vertx-mongo-client:3.8.4'
+    compile 'io.vertx:vertx-kafka-client:3.8.4'
 
 }
 

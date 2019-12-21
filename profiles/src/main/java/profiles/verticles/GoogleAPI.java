@@ -42,7 +42,7 @@ public class GoogleAPI extends MicroserviceVerticle {
             GeoApiContext context = new GeoApiContext.Builder().apiKey(API_KEY).build();
             LocationData locationData= (LocationData) handler.body();
              LatLng loc= new LatLng(locationData.getLatitude(), locationData.getLongitude());
-           GeocodingApiRequest req = GeocodingApi.reverseGeocode(context, loc);
+             GeocodingApiRequest req = GeocodingApi.reverseGeocode(context, loc);
            //ADMINISTRATIVE_AREA_LEVEL_2 receives districts - not every location has city, especially in different countries (but sometimes it represents a city)
             req.setCallback(new  PendingResult.Callback<GeocodingResult[]>(){
                 @Override
