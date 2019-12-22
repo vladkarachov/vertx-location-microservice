@@ -11,7 +11,7 @@ import io.vertx.config.ConfigRetrieverOptions;
 import io.vertx.config.ConfigStoreOptions;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
-import profile.ProfileServiceGrpc;
+//import profile.ProfileServiceGrpc;
 import profiles.model.Config;
 
 
@@ -142,7 +142,7 @@ public class ProfilesClient {
 
     return LocationServiceGrpc.newBlockingStub(channel);
   }
-  private static ProfileServiceGrpc.ProfileServiceBlockingStub getService(@Nonnull Config config) {
+ /* private static ProfileServiceGrpc.ProfileServiceBlockingStub getService(@Nonnull Config config) {
     String endpointHost = config.getEndpointHost();
     int endpointPort = Integer.parseInt(config.getEndpointPort());
     SslContext sslContext = getSslContext(config);
@@ -153,5 +153,5 @@ public class ProfilesClient {
             .build();
 
     return ProfileServiceGrpc.newBlockingStub(channel);
-  }
+  }*/
 }

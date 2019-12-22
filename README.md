@@ -1,3 +1,20 @@
+# vertx-location-microservice
+Custom microservice made from starter pack
+Start: docker run -it --net:host sample/location-microservice
+OR docker-compose up
+
+
+
+
+
+
+
+
+
+
+
+
+
 # vertx-starter-pack
 Starter pack for Vert.x development. Read a [wiki](https://github.com/IASA-HUB/vertx-starter-pack/wiki) for preparation.
 

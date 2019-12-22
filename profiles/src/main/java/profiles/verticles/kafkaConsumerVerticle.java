@@ -30,16 +30,15 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import static profiles.verticles.GoogleAPI.GET_METADATA;
-import static profiles.verticles.LocationVerticle.GET_LOCATION;
-import static profiles.verticles.LocationVerticle.PUT_LOCATION;
+import static profiles.verticles.LocationVerticle.*;
 import static profiles.verticles.kafkaProducerVerticle.*;
 
 public class kafkaConsumerVerticle extends MicroserviceVerticle {
     public static final String KAFKA_ADRESS = "localhost:9092";
 
-    public static final String KAFKA_GET_TOPIC = "PhotoGetGeo";
-    public static final String KAFKA_PUT_TOPIC = "PhotoPutGeo";
-
+    public static final String KAFKA_GET_TOPIC = "TimelapseGetGeo";
+    public static final String KAFKA_PUT_TOPIC = "TimelapsePutGeo";
+    public static final String KAFKA_DELETE_TOPIC = "DeleteTimelapse";
 
 
     @Override
@@ -69,8 +68,8 @@ public class kafkaConsumerVerticle extends MicroserviceVerticle {
                     if (record.topic().equals(KAFKA_GET_TOPIC)) getLocation(record);
 
                     //put location to db and so on ----------------------------------
-
                     if (record.topic().equals(KAFKA_PUT_TOPIC)) putLocation(record);
+                    if(record.topic().equals(KAFKA_DELETE_TOPIC)) deleteLocation(record);
                 });
 
 
@@ -79,6 +78,7 @@ public class kafkaConsumerVerticle extends MicroserviceVerticle {
         Set<String> topics = new HashSet<>();
         topics.add(KAFKA_GET_TOPIC);
         topics.add(KAFKA_PUT_TOPIC);
+        topics.add(KAFKA_DELETE_TOPIC);
         consumer.subscribe(topics);
 
     }
@@ -114,10 +114,7 @@ public class kafkaConsumerVerticle extends MicroserviceVerticle {
                 return;
             }
             LocationData loc = (LocationData) ar.result().body();
-            //TODO --------------проверить че будет-------------- скорее всего какой-то кошмар
             JsonObject res = loc.toJson().put("key", record.key());
-//                            res.appendString(record.key());
-//                            res.appendString(loc.toString());
             //отправить в кафку назад жсон локации
             vertx.eventBus().request(KAFKA_PUT_LOCATION, res, handl -> {
                 if (handl.failed()) {
@@ -169,6 +166,29 @@ public class kafkaConsumerVerticle extends MicroserviceVerticle {
                     return;
                 });
             });
+        });
+    }
+
+    private void deleteLocation(@Nonnull KafkaConsumerRecord<String, String> record){
+        Buffer buf = Buffer.buffer();
+        try {
+            buf.appendString(new JsonObject(record.value()).getString("id"));
+        }
+        catch (Exception e) {
+            System.out.println(e.getCause());
+            JsonObject response = new JsonObject().put("status", "ERROR").put("message:", "Decoding error - you must provide id of timelapse").put("key", record.key());
+            putStatus(response);
+            return;
+        }
+        vertx.eventBus().request(DELETE_LOCATION, buf, ar->{
+            if(ar.failed()){
+                JsonObject response = new JsonObject().put("status","ERROR").put("message", ar.cause().toString()).put("key", record.key());
+                putStatus(response);
+                return;
+            }
+            JsonObject response = new JsonObject().put("status", "OK").put("key", record.key());
+            putStatus(response);
+            return;
         });
     }
 }

@@ -21,6 +21,7 @@ import static profiles.verticles.GoogleAPI.GET_METADATA;
 import static profiles.verticles.LocationVerticle.PUT_LOCATION;
 import static profiles.verticles.LocationVerticle.DELETE_LOCATION;
 
+//-----this is implementation of geo microservice only for grpc
 public class LocationServiceImpl extends LocationServiceGrpc.LocationServiceImplBase {
 
     private final Vertx mVertx;

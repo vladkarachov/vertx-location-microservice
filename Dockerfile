@@ -1,6 +1,6 @@
 FROM gradle:5.6.2-jdk12 as builder
 
-LABEL company="Pharos Production Inc."
+LABEL company="Vlad Karachev."
 LABEL version="0.1.0"
 
 ENV LANG=C.UTF-8 \
@@ -17,7 +17,7 @@ RUN gradle shadowJar
 
 FROM openjdk:14-jdk-alpine3.10
 
-LABEL company="Pharos Production Inc."
+LABEL company="Vlad Karachev."
 LABEL version="0.1.0"
 
 ENV LANG=C.UTF-8 \
@@ -29,10 +29,11 @@ RUN apk add --update \
 
 WORKDIR /opt/server/
 
-COPY --from=builder /opt/server/configuration/build/libs/profile-configuration-0.1.0-all.jar .
+COPY --from=builder /opt/server/profiles/build/libs/profiles-0.1.0-all.jar ./app.jar
+#COPY --from=builder /opt/server/configuration/build/libs/profile-configuration-0.1.0-all.jar .
 COPY --from=builder /opt/server/conf ./conf
 COPY --from=builder /opt/server/ssl ./ssl
 
 EXPOSE 50051 5701
 
-CMD ["/bin/bash"]
+CMD ["exec java -jar app.jar"]

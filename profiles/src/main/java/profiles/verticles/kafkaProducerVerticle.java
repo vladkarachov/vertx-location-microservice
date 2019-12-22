@@ -66,11 +66,8 @@ public class kafkaProducerVerticle extends MicroserviceVerticle {
             }
         });
         vertx.eventBus().<JsonObject>consumer(KAFKA_PUT_LOCATION, handler -> {
-            System.out.println("Kafka put location");
-            //todo проверить
             try {
                 LocationData loc = new LocationData(handler.body());
-                //так блять надо посмотреть как ключ из буфера получить скорее всего сосалово
                 KafkaProducerRecord<String, String> record =
                         KafkaProducerRecord.create(RESP_LOC, handler.body().getString("key"), loc.toString());
                 producer.write(record);
