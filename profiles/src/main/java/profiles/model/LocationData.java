@@ -98,6 +98,9 @@ public class LocationData {
         this.mCountry = country;
     }
 
+    public LocationData setId(String id) {this.mId= id;
+        return this;
+    }
     @Override
     public String toString() {
 

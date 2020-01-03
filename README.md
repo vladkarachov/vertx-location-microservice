@@ -1,6 +1,8 @@
 # vertx-location-microservice
 Custom microservice made from starter pack
+
 Start: docker run -it --net:host sample/location-microservice
+
 OR docker-compose up
 
 

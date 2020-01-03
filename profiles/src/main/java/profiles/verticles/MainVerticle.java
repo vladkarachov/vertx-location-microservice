@@ -26,9 +26,6 @@ public class MainVerticle extends MicroserviceVerticle {
   @Override
   public void start(Promise<Void> startPromise) {
     createServiceDiscovery();
-
-
-
     List<Promise> verticlePromises = Stream.of(
         ConfigurationVerticle.class,
         LocationVerticle.class,

@@ -8,6 +8,7 @@ import io.vertx.kafka.client.producer.KafkaProducer;
 import io.vertx.kafka.client.producer.KafkaProducerRecord;
 import profiles.model.LocationData;
 import profiles.model.LocationDataCodec;
+import profiles.model.Mapper;
 import vertx.common.MicroserviceVerticle;
 
 import java.util.HashMap;
@@ -23,7 +24,7 @@ public class kafkaProducerVerticle extends MicroserviceVerticle {
     public static final String STATUS_TOPIC = "LOC_STATUS";
     public static final String RESP_LOC = "LOC_RESP";
     public static final String SEARCH_PUT = "SEARCH_PUT";
-
+    Mapper mapper = new Mapper();
 
     @Override
     public void start(Promise<Void> startPromise) {
@@ -51,17 +52,13 @@ public class kafkaProducerVerticle extends MicroserviceVerticle {
         KafkaProducer<String, String> producer = KafkaProducer.create(vertx, configProd);
 
         vertx.eventBus().<JsonObject>consumer(KAFKA_PUT_STATUS, handler -> {
-            System.out.println("Kafka put status");
-            try{
-            JsonObject response = new JsonObject()
-                            .put("status", handler.body().getString("status"))
-                            .put("message", handler.body().getString("message"));
-            KafkaProducerRecord<String, String> record =
-                    KafkaProducerRecord.create(STATUS_TOPIC, handler.body().getString("key"), response.toString());
-            producer.write(record);
-            handler.reply(200);
-            }
-            catch (Exception e){
+            try {
+                JsonObject response = mapper.mapResponce(handler.body());
+                KafkaProducerRecord<String, String> record =
+                        KafkaProducerRecord.create(STATUS_TOPIC, handler.body().getString("key"), response.toString());
+                producer.write(record);
+                handler.reply(200);
+            } catch (Exception e) {
                 handler.fail(500, e.toString());
             }
         });
@@ -69,7 +66,7 @@ public class kafkaProducerVerticle extends MicroserviceVerticle {
             try {
                 LocationData loc = new LocationData(handler.body());
                 KafkaProducerRecord<String, String> record =
-                        KafkaProducerRecord.create(RESP_LOC, handler.body().getString("key"), loc.toString());
+                        KafkaProducerRecord.create(RESP_LOC, loc.getId(), loc.toString());
                 producer.write(record);
                 handler.reply(200);
             }
@@ -81,9 +78,9 @@ public class kafkaProducerVerticle extends MicroserviceVerticle {
         vertx.eventBus().<JsonObject>consumer(KAFKA_PUT_SEARCH, handler -> {
             //todo проверить
             try {
-                JsonObject response = new JsonObject().put("id", handler.body().getString("id")).put("city", handler.body().getString("city"));
+                JsonObject response = mapper.mapElasticSearchResponce(handler.body());
                 KafkaProducerRecord<String, String> record =
-                        KafkaProducerRecord.create(SEARCH_PUT, handler.body().getString("key"), response.toString());
+                        KafkaProducerRecord.create(SEARCH_PUT, handler.body().getString("id"), response.toString());
                 producer.write(record);
                 handler.reply(200);
             }

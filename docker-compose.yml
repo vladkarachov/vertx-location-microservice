@@ -3,7 +3,6 @@ version: '3.7'
 services:
   location:
     build: .
-
     environment:
       - VERTX_CONFIG_PATH=/opt/server/conf/config.json
     entrypoint: ["sh", "-c"]

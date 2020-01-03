@@ -9,6 +9,9 @@ allprojects {
     version = '0.1.0'
 }
 
+dependencies {
+    //implementation 'org.jetbrains:annotations:15.0'
+}
 
 
 subprojects {
