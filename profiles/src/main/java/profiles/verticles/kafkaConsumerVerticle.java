@@ -26,9 +26,9 @@ import static profiles.verticles.kafkaProducerVerticle.*;
 public class kafkaConsumerVerticle extends MicroserviceVerticle {
     public static final String KAFKA_ADRESS = "localhost:9092";
 
-    public static final String KAFKA_GET_TOPIC = "TimelapseGetGeo";
-    public static final String KAFKA_PUT_TOPIC = "TimelapsePutGeo";
-    public static final String KAFKA_DELETE_TOPIC = "DeleteTimelapse";
+    public static final String KAFKA_GET_TOPIC = "TimelapseGetLoc";
+    public static final String KAFKA_PUT_TOPIC = "TimelapsePutLoc";
+    public static final String KAFKA_DELETE_TOPIC = "TimelapseDelLoc";
     Mapper mapper = new Mapper();
 
     @Override
@@ -76,9 +76,7 @@ public class kafkaConsumerVerticle extends MicroserviceVerticle {
 
     private void getLocation(@Nonnull KafkaConsumerRecord<String, String> record) {
         Buffer buf = Buffer.buffer();
-        //надо как-то получить ид и не сломать апи вертикл поетому эта строка такой кошмар
         try {
-            //buf.appendString(new JsonObject(record.value()).getString("id"));
             buf.appendString(record.key());
         } catch (Exception e) {
             JsonObject response = mapper.FalueResponce(record, e.toString());
@@ -91,8 +89,6 @@ public class kafkaConsumerVerticle extends MicroserviceVerticle {
     private void putLocation(@Nonnull KafkaConsumerRecord<String, String> record) {
         LocationData loc=null;
         try {
-            //loc = new LocationData(new JsonObject(record.value()));
-            //loc.setId(record.key());
             loc=mapper.recordToLoc(record);
         } catch (Exception e) {
             JsonObject response = mapper.FalueResponce(record, e.getCause().toString());
@@ -113,7 +109,6 @@ public class kafkaConsumerVerticle extends MicroserviceVerticle {
     private void deleteLocation(@Nonnull KafkaConsumerRecord<String, String> record){
         Buffer buf = Buffer.buffer();
         try {
-            //buf.appendString(new JsonObject(record.value()).getString("id"));
             buf.appendString(record.key());
         }
         catch (Exception e) {
@@ -156,7 +151,6 @@ public class kafkaConsumerVerticle extends MicroserviceVerticle {
                 putStatus(response);
                 return;
             }
-            //JsonObject elSearch = mapper.mapElasticSearchKafka(record, loc);
             putToElasticSearch(loc.toJson(), record);
         });
 

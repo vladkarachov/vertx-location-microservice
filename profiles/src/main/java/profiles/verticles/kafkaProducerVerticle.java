@@ -21,9 +21,9 @@ public class kafkaProducerVerticle extends MicroserviceVerticle {
     public static final String KAFKA_PUT_LOCATION = "PUT_LOCATION_TO_KAFKA";
     public static final String KAFKA_PUT_SEARCH = "PUT_LOCATION_TO_KAFKA_FOR_SEARCH";
     //kafka
-    public static final String STATUS_TOPIC = "LOC_STATUS";
-    public static final String RESP_LOC = "LOC_RESP";
-    public static final String SEARCH_PUT = "SEARCH_PUT";
+    public static final String STATUS_TOPIC = "LocStatus";
+    public static final String RESP_LOC = "LocResp";
+    public static final String SEARCH_PUT = "SearchPut";
     Mapper mapper = new Mapper();
 
     @Override

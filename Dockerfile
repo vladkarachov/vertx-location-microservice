@@ -30,10 +30,9 @@ RUN apk add --update \
 WORKDIR /opt/server/
 
 COPY --from=builder /opt/server/profiles/build/libs/profiles-0.1.0-all.jar ./app.jar
-#COPY --from=builder /opt/server/configuration/build/libs/profile-configuration-0.1.0-all.jar .
 COPY --from=builder /opt/server/conf ./conf
 COPY --from=builder /opt/server/ssl ./ssl
 
 EXPOSE 50051 5701
 
-CMD ["exec java -jar app.jar"]
+CMD exec java -jar app.jar
