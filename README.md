@@ -2,9 +2,8 @@
 Custom microservice made from starter pack
 
 Start: docker run -it --net:host vladkarachov/location-microservice
-
 OR docker-compose up
-
+You can view this image on https://hub.docker.com/r/vladkarachov/location-microservice
 
 
 
